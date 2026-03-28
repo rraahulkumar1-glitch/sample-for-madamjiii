@@ -1,0 +1,376 @@
+/body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Private Galaxy</title>
+
+<style>
+html,body{
+  margin:0;width:100%;height:100%;
+  overflow:hidden;
+  background:black;
+  perspective:2400px;
+  font-family:"Inter", Georgia, serif;
+}
+
+/* INTRO */
+#intro{
+  position:fixed;inset:0;
+  background:black;
+  display:flex;align-items:center;justify-content:center;
+  z-index:10000;
+  animation:introOut 2s ease forwards;
+  animation-delay:6s;
+}
+#logo{
+  width:260px;max-width:70%;
+  opacity:0;
+  filter:drop-shadow(0 0 40px rgba(255,255,255,.7));
+  animation:logoIn 2s ease forwards,logoZoom 6s ease forwards;
+}
+@keyframes logoIn{to{opacity:1}}
+@keyframes logoZoom{from{transform:scale(.85)}to{transform:scale(1.1)}}
+@keyframes introOut{to{opacity:0;pointer-events:none}}
+
+/* LOCK */
+#lockScreen{
+  position:fixed;inset:0;
+  background:black;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  color:white;
+  z-index:9999;
+  opacity:0;
+  animation:lockIn 2s ease forwards;
+  animation-delay:6s;
+  transition:filter 1s,background 1s;
+}
+@keyframes lockIn{to{opacity:1}}
+#lockScreen input{
+  padding:12px 18px;font-size:17px;
+  border-radius:10px;border:none;
+  margin-top:16px;text-align:center;
+}
+#lockScreen button{
+  margin-top:16px;padding:10px 26px;
+  font-size:15px;border-radius:999px;
+  background:none;border:1px solid rgba(255,255,255,.6);
+  color:white;cursor:pointer;
+}
+#lockMsg{
+  margin-top:18px;
+  max-width:80%;
+  text-align:center;
+  font-size:16px;
+  color:#ffbcbc;
+  opacity:0;
+  transition:.6s;
+  text-shadow:0 0 12px rgba(255,150,150,.6);
+}
+
+/* SHAKE */
+.shake{animation:shake .4s}
+@keyframes shake{
+  0%{transform:translateX(0)}
+  25%{transform:translateX(-6px)}
+  50%{transform:translateX(6px)}
+  75%{transform:translateX(-4px)}
+  100%{transform:translateX(0)}
+}
+
+/* DARK LOCK */
+.locked{
+  filter:blur(6px) brightness(.3);
+  background:black;
+}
+
+/* SCENE */
+#scene{position:absolute;width:100%;height:100%;transform-style:preserve-3d;}
+
+/* NEBULA BACKGROUND */
+.nebula{
+  position:absolute;width:300%;height:300%;
+  background:
+    radial-gradient(circle at 30% 40%, rgba(160,90,255,.4), transparent 60%),
+    radial-gradient(circle at 70% 60%, rgba(60,150,255,.3), transparent 65%);
+  transform:translateZ(-2200px) scale(4);
+  animation:nebulaMove 180s linear infinite, nebulaColorShift 60s linear infinite alternate;
+  z-index:-5;
+}
+.nebula2{
+  background:
+    radial-gradient(circle at 40% 30%, rgba(255,120,180,.35), transparent 55%),
+    radial-gradient(circle at 65% 70%, rgba(120,200,255,.3), transparent 60%);
+  transform:translateZ(-2500px) scale(4.2);
+  z-index:-4;
+}
+.nebula3{
+  background:
+    radial-gradient(circle at 60% 50%, rgba(255,200,100,.25), transparent 60%),
+    radial-gradient(circle at 25% 70%, rgba(150,255,120,.25), transparent 65%);
+  transform:translateZ(-2000px) scale(3.8);
+  z-index:-3;
+}
+
+@keyframes nebulaMove{
+  to{transform:translate(-1200px,-1200px) translateZ(-2200px) scale(4.6);}
+}
+@keyframes nebulaColorShift{
+  0%{filter:hue-rotate(0deg);}
+  50%{filter:hue-rotate(180deg);}
+  100%{filter:hue-rotate(360deg);}
+}
+
+/* STARS MOVING OUTWARD */
+.star{
+  position:absolute;width:2px;height:2px;
+  background:white;border-radius:50%;
+  box-shadow:0 0 3px rgba(255,255,255,.8);
+}
+
+/* COMETS MOVING OUTWARD WITH GLOW AND TRAIL */
+.comet{
+  position:absolute;
+  width:4px; height:4px;
+  background:white;
+  border-radius:50%;
+  box-shadow:0 0 20px white, 0 0 40px rgba(255,255,255,.6);
+  opacity:0.9;
+  transform:translateZ(-3000px);
+  animation:cometFly 4s linear forwards;
+}
+@keyframes cometFly{
+  0%{
+    transform:translateZ(-3000px);
+    opacity:1;
+  }
+  100%{
+    transform:translateZ(800px);
+    opacity:0;
+  }
+}
+
+/* SATURN RINGS */
+#saturnRings{
+  position:absolute;
+  width:300px;
+  height:30px;
+  border:4px solid rgba(200,180,100,.5);
+  border-radius:50%;
+  top:30%;
+  left:70%;
+  transform:translateZ(500px) rotateX(70deg);
+  animation:rotateRings 40s linear infinite;
+}
+@keyframes rotateRings{
+  from{transform:translateZ(500px) rotateX(70deg) rotateY(0deg);}
+  to{transform:translateZ(500px) rotateX(70deg) rotateY(360deg);}
+}
+
+/* ROMANTIC TEXT */
+#romText{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%) translateZ(450px);
+  text-align:center;
+  font-size:32px;
+  color:white;
+  opacity:1;
+  text-shadow:0 0 40px rgba(255,255,255,.6);
+}
+
+/* CONTROLS */
+#controls{
+  position:fixed;bottom:20px;left:20px;
+  background:rgba(0,0,0,.55);
+  padding:12px;border-radius:12px;
+  color:white;font-size:14px;
+  z-index:10;
+}
+#controls button{
+  background:none;border:1px solid white;
+  color:white;padding:5px 10px;
+  border-radius:6px;cursor:pointer;
+  margin-bottom:6px;
+}
+#controls input[type=range]{width:100%;}
+</style>
+</head>
+
+<body>
+
+<div id="intro">
+  <img id="logo" src="logo.png">
+</div>
+
+<div id="lockScreen">
+  <h2>Private Galaxy</h2>
+  <input type="password" id="pass" placeholder="Password">
+  <button id="btn" onclick="unlock()">Enter</button>
+  <div id="lockMsg"></div>
+</div>
+
+<!-- Nebulas -->
+<div class="nebula"></div>
+<div class="nebula nebula2"></div>
+<div class="nebula nebula3"></div>
+
+<!-- Saturn Rings -->
+<div id="saturnRings"></div>
+
+<div id="scene"></div>
+
+<audio id="music" loop>
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<audio id="sad" loop>
+  <source src="sad.mp3" type="audio/mpeg">
+</audio>
+
+<!-- CONTROL PANEL -->
+<div id="controls">
+<button id="musicBtn">▶ Play</button><br>
+🔊 Volume<br>
+<input type="range" min="0" max="1" step="0.01" value="0.7" id="vol"><br><br>
+⭐ Star Speed<br>
+<input type="range" min="2" max="30" value="12" id="speed"><br><br>
+<button id="toggleGalaxy">🌀 Toggle Galaxies</button>
+</div>
+
+<script>
+/* PASSWORD LOCK */
+const PASSWORD="motki";
+let attempts=0,locked=false;
+const messages=[
+ "Are Madam jii… Bhul gyi… Hm aapko kya bolte the phle.",
+ "Are ruko… Thora achha se yaad kro…",
+ "Dekho ye last time hai… Agr is baar nhi hua… To ye kabhi open nhi hoga."
+];
+const lockMsg=document.getElementById("lockMsg");
+const lockScreen=document.getElementById("lockScreen");
+const sad=document.getElementById("sad");
+
+function unlock(){
+  if(locked) return;
+  if(pass.value===PASSWORD){
+    lockScreen.style.display="none";
+    music.play().catch(()=>{});
+    animateStars();
+    spawnComets();
+    startTyping();
+  } else {
+    attempts++;
+    lockMsg.innerText=messages[Math.min(attempts-1,2)];
+    lockMsg.style.opacity=1;
+    lockScreen.classList.add("shake");
+    sad.volume=.4;
+    sad.play().catch(()=>{});
+    setTimeout(()=>lockScreen.classList.remove("shake"),400);
+    if(attempts>=3){
+      locked=true;
+      document.getElementById("btn").disabled=true;
+      lockMsg.innerText="Too late… Some doors close forever.";
+      lockScreen.classList.add("locked");
+    }
+  }
+}
+
+/* STARS OUTWARD */
+const scene=document.getElementById("scene");
+const stars=[];
+let speed=12;
+for(let i=0;i<1200;i++){
+  const s=document.createElement("div");
+  s.className="star";
+  resetStar(s,true);
+  scene.appendChild(s);
+  stars.push(s);
+}
+function resetStar(s,init){
+  s.x=(Math.random()-0.5)*innerWidth*2;
+  s.y=(Math.random()-0.5)*innerHeight*2;
+  s.z=init?Math.random()*-3000:-3000;
+}
+function animateStars(){
+  stars.forEach(s=>{
+    s.z+=speed;
+    if(s.z>800) resetStar(s);
+    const sc=1-s.z/4000;
+    s.style.transform=`translate(${s.x*sc}px,${s.y*sc}px) translateZ(${s.z}px) scale(${sc})`;
+  });
+  requestAnimationFrame(animateStars);
+}
+
+/* COMETS WITH GLOW */
+function spawnComets(){
+  setInterval(()=>{
+    let c=document.createElement("div");
+    c.className="comet";
+    c.style.top=(Math.random()*80-40)+"vh";
+    c.style.left=(Math.random()*80-40)+"vw";
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),4000);
+  },1500);
+}
+
+/* ROMANTIC CINEMATIC TEXT */
+const lines=[
+  "Hey Madam jii 💝",
+  "It's me Rahul 😎",
+  "Even the stars seem brighter when I think of your smile ✨",
+  "Time may have changed us, but my heart always remembers you.",
+  "Every memory whispers your name softly in my soul.",
+  "You taught me patience, love, and respect without even knowing.",
+  "If I could paint my feelings in the sky, it would look like this galaxy 🌌",
+  "No matter the distance, you'll always be my special star ❤️",
+  "And if fate allows, one day, our paths will meet again...",
+  "Until then, know that you are cherished beyond words 💖"
+];
+const endingLine = "💫 Always yours, Rahul 💫";
+let ti = 0;
+const textDiv = document.createElement("div");
+textDiv.id = "romText";
+scene.appendChild(textDiv);
+
+function typeLine(line,i=0,callback=null){
+  if(i<line.length){
+    textDiv.innerHTML=line.slice(0,i+1);
+    setTimeout(()=>typeLine(line,i+1,callback),60);
+  } else if(callback){setTimeout(callback,1200);}
+}
+function showNextLine(){
+  if(ti<lines.length){
+    typeLine(lines[ti],0,()=>{
+      ti++; showNextLine();
+    });
+  } else { typeLine(endingLine,0,fadeToBlack); }
+}
+function fadeToBlack(){
+  const fadeDiv=document.createElement("div");
+  fadeDiv.style.position="fixed"; fadeDiv.style.inset=0;
+  fadeDiv.style.background="black";
+  fadeDiv.style.opacity=0;
+  fadeDiv.style.transition="opacity 6s ease";
+  document.body.appendChild(fadeDiv);
+  setTimeout(()=>fadeDiv.style.opacity=1,100);
+}
+function startTyping(){ti=0; showNextLine();}
+
+/* CONTROLS */
+const music=document.getElementById("music");
+const musicBtn=document.getElementById("musicBtn");
+const vol=document.getElementById("vol");
+const toggleGalaxy=document.getElementById("toggleGalaxy");
+let galaxiesVisible=true;
+
+musicBtn.onclick=()=>{if(music.paused){music.play(); musicBtn.innerText="⏸ Pause";}else{music.pause(); musicBtn.innerText="▶ Play";}};
+vol.oninput=e=>music.volume=e.target.value;
+document.getElementById("speed").oninput=e=>speed=+e.target.value;
+toggleGalaxy.onclick=()=>{galaxiesVisible=!galaxiesVisible; document.querySelectorAll('.nebula').forEach(n=>n.style.display=galaxiesVisible?'block':'none');};
+</script>
+
+</body>
+</html>
